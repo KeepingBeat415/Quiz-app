@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class StartScreen extends StatelessWidget {
-  const StartScreen({super.key});
+  //passing function as argument values, add function return type
+  //"this.startQuiz" >> this. work as point to class declared variable
+  const StartScreen(this.startQuiz, {super.key});
+
+  //constructor parameter can't directly use by class body
+  //need to declare variable as place hold
+  final void Function() startQuiz;
 
   @override
   Widget build(context) {
@@ -32,7 +38,15 @@ class StartScreen extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           OutlinedButton.icon(
-            onPressed: () {},
+            // anonymous function only be executed when press button
+            //anonymous function passes as a value to the onPressed argument
+            // onPressed: () { // => option 1
+            //   //pass parent's function object pointer, and call it
+            //   startQuiz();
+            // },
+            // ==> option 2
+            // replace anonymous function as pointer of startQuiz variable
+            onPressed: startQuiz,
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.white,
             ),

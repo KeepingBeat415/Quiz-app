@@ -12,7 +12,27 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
-  Widget activeScreen = const StartScreen();
+  // Option 1 for initial activeScreen
+
+  // use Widget type as a more general type, and able to assign to another Widget
+  // if using "var activeScreen" which means activeScreen only assign to "StartScreen" class type
+  // using "switchScreen" to pass parent's function into child's widget as pointer
+  Widget? activeScreen; // add "?" means activeScreen can't be NULL
+
+  // do some extra initialization work when that state object is created for the first time
+  // flow -> SomeObject(): class initialization code -> SomeObject constructor function executes: instance variables & methods are created
+  // flow -> SomeObject was created & is stored in memory -> Flutter calls initState()
+  @override
+  void initState() {
+    activeScreen = StartScreen(switchScreen);
+    super.initState();
+  }
+
+  // initState(): Executed by Flutter when the StatefulWidget's State object is initialized
+
+  // build(): Executed by Flutter when the Widget is built for the first time AND after setState() was called
+
+  // dispose(): Executed by Flutter right before the Widget will be deleted (e.g., because it was displayed conditionally)
 
   void switchScreen() {
     //function provided by Flutter in that extends State Class
@@ -22,8 +42,22 @@ class _QuizState extends State<Quiz> {
     });
   }
 
+  //option 2 for initial activeScreen
+  // var activeScreen = 'start-screen';
+
+  // void switchScreen() {
+  //   setState(() {
+  //     activeScreen = 'questions-screen';
+  //   });
+  // }
+
   @override
   Widget build(context) {
+    //option 3 declare variable in the build function
+    // final screenWight = activeScreen == 'start-screen'
+    //     ? StartScreen(switchScreen)
+    //     : const QuestionsScreen();
+
     return MaterialApp(
       home: Scaffold(
         // body: GradientContainer(
@@ -42,6 +76,11 @@ class _QuizState extends State<Quiz> {
             ),
           ),
           child: activeScreen,
+          //option 2 for activeScreen
+          // using Ternary Expression in the child level
+          //child: activeScreen == 'start-screen' ? StartScreen(switchScreen) : const QuestionsScreen()
+          //option 3
+          //child: screenWidget,
         ),
       ),
     );
