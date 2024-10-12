@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/data/questions.dart';
 import 'package:quiz_app/questions_screen.dart';
+import 'package:quiz_app/results_screen.dart';
 import 'package:quiz_app/start_screen.dart';
 
 class Quiz extends StatefulWidget {
@@ -12,6 +14,9 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
+  //not re-assign with new variable
+  List<String> selectedAnswers = [];
+
   // Option 1 for initial activeScreen
 
   // use Widget type as a more general type, and able to assign to another Widget
@@ -38,7 +43,7 @@ class _QuizState extends State<Quiz> {
     //function provided by Flutter in that extends State Class
     // setState will call build function to rerender UI
     setState(() {
-      activeScreen = const QuestionsScreen();
+      activeScreen = QuestionsScreen(onSelectedAnswer: chooseAnswers);
     });
   }
 
@@ -50,6 +55,22 @@ class _QuizState extends State<Quiz> {
   //     activeScreen = 'questions-screen';
   //   });
   // }
+
+  void chooseAnswers(String answer) {
+    //add value into List without re-assign value, which means doesn't modify variable memory location
+    selectedAnswers.add(answer);
+
+    if (selectedAnswers.length == questions.length) {
+      setState(() {
+        //activeScreen = StartScreen(switchScreen);
+        activeScreen = ResultsScreen(
+          chooseAnswers: selectedAnswers,
+          restartQuiz: switchScreen,
+        );
+        selectedAnswers = [];
+      });
+    }
+  }
 
   @override
   Widget build(context) {

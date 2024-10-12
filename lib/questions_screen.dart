@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_app/answer_button.dart';
+import 'package:quiz_app/data/questions.dart';
 
 class QuestionsScreen extends StatefulWidget {
-  const QuestionsScreen({super.key});
+  final void Function(String answer) onSelectedAnswer;
+  const QuestionsScreen({super.key, required this.onSelectedAnswer});
 
   @override
   State<QuestionsScreen> createState() {
@@ -11,35 +14,50 @@ class QuestionsScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionsScreen> {
+  var currentQuestionIndex = 0;
+
+  void answerQuestion(String selectedAnswer) {
+    // using State property, which able to access statewidget property
+    widget.onSelectedAnswer(selectedAnswer);
+    //currentQuestionIndex += 1;
+    setState(() {
+      currentQuestionIndex++; //increments the value by 1
+    });
+  }
+
   @override
   Widget build(context) {
+    final currentQuestion = questions[currentQuestionIndex];
+
     return SizedBox(
       width: double.infinity, //using maximum width
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'The Question',
-            style: TextStyle(color: Colors.white),
-          ),
-          const SizedBox(height: 30),
-          AnswerButton(
-            answerText: 'Answer 1',
-            onTap: () {},
-          ),
-          AnswerButton(
-            answerText: 'Answer 1',
-            onTap: () {},
-          ),
-          AnswerButton(
-            answerText: 'Answer 1',
-            onTap: () {},
-          ),
-          AnswerButton(
-            answerText: 'Answer 1',
-            onTap: () {},
-          ),
-        ],
+      child: Container(
+        margin: EdgeInsets.all(40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              currentQuestion.text,
+              style: GoogleFonts.lato(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+            // '...' >> the Spread Operator, because Children parameter only accept Widget item,
+            // but map return a nested list
+            ...currentQuestion.getShuffledAnswers().map((item) {
+              return AnswerButton(
+                  answerText: item,
+                  onTap: () {
+                    answerQuestion(item);
+                  });
+            }),
+          ],
+        ),
       ),
     );
   }
